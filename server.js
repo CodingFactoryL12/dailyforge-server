@@ -87,3 +87,26 @@ app.post("/generate-quests", async (req, res) => {
 });
 
 app.listen(3000, () => console.log("🚀 Forge-Server aktiv unter Port 3000"));
+
+
+
+app.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+  const hashed = await bcrypt.hash(password, 10);
+
+  db.run(
+    `INSERT INTO users (username, password) VALUES (?, ?)`,
+    [username, hashed],
+    (err) => {
+      if (err) {
+        if (err.message.includes("UNIQUE")) {
+          res.status(409).json({ error: "Benutzername bereits vergeben" });
+        } else {
+          res.status(500).json({ error: "Fehler beim Registrieren" });
+        }
+      } else {
+        res.json({ success: true });
+      }
+    }
+  );
+});
