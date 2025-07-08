@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const sqlite3 = require("sqlite3").verbose();
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const genAI = new GoogleGenerativeAI("DEIN_GEMINI_API_KEY");
+const genAI = new GoogleGenerativeAI("AIzaSyD0ROg3IYjltX4WwwV7yzvr-3TcOjwmDz0");
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -17,7 +17,8 @@ db.run(`CREATE TABLE IF NOT EXISTS users (
   password TEXT,
   xp INTEGER DEFAULT 0,
   profile TEXT DEFAULT '{}'
-)`);
+);
+`);
 
 // Prompt-Builder
 function buildPrompt(profile) {
