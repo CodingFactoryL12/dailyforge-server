@@ -110,3 +110,23 @@ app.post("/register", async (req, res) => {
     }
   );
 });
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  db.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, user) => {
+    if (err) return res.status(500).json({ error: "Serverfehler beim Login" });
+    if (!user) return res.status(404).json({ error: "Benutzer nicht gefunden" });
+
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) return res.status(403).json({ error: "Falsches Passwort" });
+
+    const token = jwt.sign({ id: user.id, username: user.username }, "secret", { expiresIn: "7d" });
+
+    res.json({
+      token,
+      xp: user.xp || 0
+    });
+  });
+});
+
