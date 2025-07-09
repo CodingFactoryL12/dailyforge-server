@@ -17,10 +17,22 @@ app.use((req, res, next) => {
 });
 
 //-------------UI-----------------------
-app.get("/login", (req, res) => {
+app.get("/", (req, res) => {
 	res.sendFile(path.join(__dirname, "../client/login.html"));
 });
 //---------------------------------------
+app.get("/mainmenu", (req, res) => {
+	res.sendFile(path.join(__dirname, "../client/mainmenu.html"));
+
+//--------------------------------------------
+
+app.get("/register", (req, res) => {
+	res.sendFile(path.join(__dirname, "../client/register.html"));
+
+//-------------------------------
+
+app.get("/quest", (req, res) => {
+	res.sendFile(path.join(__dirname, "../client/quest/quest.html"));
 
 const db = new sqlite3.Database("./users.db");
 db.run(`CREATE TABLE IF NOT EXISTS users (
