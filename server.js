@@ -130,3 +130,48 @@ app.post("/login", (req, res) => {
   });
 });
 
+app.post("/load-xp", (req, res) => {
+  const { token } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, "secret");
+
+    db.get(`SELECT xp FROM users WHERE id = ?`, [decoded.id], (err, row) => {
+      if (err || !row) {
+        console.error("Fehler beim Laden der XP:", err?.message || "Kein Benutzer gefunden");
+        return res.status(500).json({ error: "XP konnte nicht geladen werden" });
+      }
+
+      res.json({ xp: row.xp || 0 });
+    });
+  } catch (err) {
+    console.error("Ungültiger Token:", err.message);
+    res.status(403).json({ error: "Token ungültig" });
+  }
+});
+
+app.post("/save-xp", (req, res) => {
+  const { token, xp } = req.body;
+
+  try {
+    const decoded = jwt.verify(token, "secret");
+
+    db.run(`UPDATE users SET xp = ? WHERE id = ?`, [xp, decoded.id], (err) => {
+      if (err) {
+        console.error("Fehler beim Speichern der XP:", err.message);
+        return res.status(500).json({ error: "XP konnte nicht gespeichert werden" });
+      }
+
+      res.json({ success: true });
+    });
+  } catch (err) {
+    console.error("Token ungültig:", err.message);
+    res.status(403).json({ error: "Token ungültig" });
+  }
+});
+
+app.use((req, res, next) => {
+  console.log("Anfrage:", req.method, req.url);
+  console.log("Body:", req.body);
+  next();
+});
