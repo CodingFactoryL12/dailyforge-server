@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DailyForge+</title>
+  <link rel="stylesheet" href="./mainmenu.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- ⋯ Drei-Punkte-Menü oben rechts -->
+  <div class="top-right-menu">
+    <button class="more-btn" onclick="toggleDropdown()">⋯</button>
+    <div id="moreMenu" class="dropdown-content hidden">
+      <button onclick="resetXP()">🔄 XP zurücksetzen</button>
+      <button onclick="addDevXP()">🧪 Entwickler-XP +100</button>
+      <button onclick="openSettings()">⚙️ Einstellungen</button>
+      <button onclick="logout()">🔓 Logout</button>
+    </div>
+  </div>
+
+  <div class="mainmenu-container level-1">
+    <header class="header-area">
+      <h1 id="greeting">Willkommen Leon 👑</h1>
+      <p id="levelInfo">ForgeLevel 1 aktiviert</p>
+    </header>
+
+    <div class="xpbar-container">
+      <p class="xpbar-label" id="xpLabel">0 / 10 XP</p>
+      <div class="xpbar-track">
+        <div class="xpbar-fill" id="xpFill"></div>
+      </div>
+      <p id="syncStatus" style="font-size: 0.9rem; color: gray;">📡 Synchronisierung aktiv …</p>
+    </div>
+
+    <div class="menu-buttons">
+      <button class="menu-btn">🧘 Zen-Modus</button>
+      <button class="menu-btn">🛍️ Shop</button>
+      <button class="menu-btn" onclick="location.href='/quest/quests.html'">🎯 Daily Quest</button>
+    </div>
+  </div>
+
+  <script>
+    const thresholds = [10, 50, 100, 250, 600];
+    const levelColors = ['level-1', 'level-2', 'level-3', 'level-4', 'level-5', 'level-max'];
+    const levelTitles = ['Novice', 'Glutfinder', 'Erfahrungsschmied', 'Meister des Rhythmus', 'Flow-Gott', 'Legendärer Schmied'];
+
+    let currentXP = parseInt(localStorage.getItem("forgeXP")) || 0;
+
+    function getLevel(xp) {
+      for (let i = 0; i < thresholds.length; i++) {
+        if (xp < thresholds[i]) return i + 1;
+      }
+      return thresholds.length + 1;
+    }
+
+    function updateUI() {
+      const level = getLevel(currentXP);
+      const maxXP = thresholds[level - 1] || thresholds.at(-1);
+      const baseXP = level > 1 ? thresholds[level - 2] : 0;
+      const percent = Math.min(((currentXP - baseXP) / (maxXP - baseXP)) * 100, 100);
+      document.getElementById("xpLabel").textContent = `${currentXP - baseXP} / ${maxXP - baseXP} XP`;
+      document.getElementById("levelInfo").textContent = `ForgeLevel ${level} aktiviert`;
+      document.getElementById("greeting").textContent = `Willkommen Leon 👑 – ${levelTitles[level - 1] || 'Held'}`;
+      document.querySelector(".mainmenu-container").className = `mainmenu-container ${levelColors[level - 1]}`;
+      document.getElementById("xpFill").style.width = percent + "%";
+    }
+
+    async function sendXPToServer(xp) {
+      const token = localStorage.getItem("forgeToken");
+      const status = document.getElementById("syncStatus");
+
+      if (!token) {
+        console.warn("❌ Kein Token gefunden");
+        status.textContent = "❌ Kein Token – XP nicht gesendet";
+        return;
+      }
+
+      try {
+        const res = await fetch("https://dailyforge-server.onrender.com/save-xp", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, xp })
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          console.log("✅ XP erfolgreich gesendet:", xp);
+          status.textContent = `✅ XP gespeichert (${xp})`;
+        } else {
+          console.warn("⚠️ Antwort ohne Erfolg:", data);
+          status.textContent = "⚠️ Serverantwort fehlerhaft";
+        }
+      } catch (err) {
+        console.error("❌ Netzwerkfehler beim Speichern:", err);
+        status.textContent = "❌ Netzwerkfehler";
+      }
+    }
+
+    function resetXP() {
+      currentXP = 0;
+      localStorage.setItem("forgeXP", "0");
+      sendXPToServer(0);
+      updateUI();
+    }
+
+    function addDevXP() {
+      currentXP += 100;
+      localStorage.setItem("forgeXP", currentXP);
+      sendXPToServer(currentXP);
+      updateUI();
+    }
+
+    function toggleDropdown() {
+      document.getElementById("moreMenu").classList.toggle("hidden");
+    }
+
+    function openSettings() {
+      alert("⚙️ Einstellungen folgen bald.");
+    }
+
+    function logout() {
+      const container = document.querySelector(".mainmenu-container");
+      container.innerHTML = `
+        <header class="header-area">
+          <h1>👋 Bis bald, Schmied Leon!</h1>
+          <p>Dein Fortschritt wurde gespeichert.</p>
+          <p style="margin-top: 1rem;">Du wirst zur Anmeldung zurückgeführt...</p>
+        </header>
+      `;
+      container.className = "mainmenu-container level-1";
+      localStorage.removeItem("forgeToken");
+      localStorage.removeItem("forgeXP");
+      setTimeout(() => {
+        location.href = "login.html";
+      }, 2000);
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      updateUI();
+      sendXPToServer(currentXP); // Sync bei Start
+    });
+  </script>
+</body>
+</html>

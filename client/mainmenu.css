@@ -1,0 +1,83 @@
+body {
+  margin: 0;
+  font-family: 'Work Sans', sans-serif;
+  background: #1b1b1b;
+  color: #eee;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+h1#greeting {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #ffd96f;
+}
+
+#levelInfo {
+  font-size: 1.1rem;
+  color: #ccc;
+}
+
+.xpbar {
+  width: 80%;
+  max-width: 400px;
+  margin: 1rem 0;
+}
+
+.xpbar-track {
+  background: #333;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 20px;
+}
+
+.xpbar-fill {
+  background: linear-gradient(to right, #62ff00, #ffaa00);
+  height: 100%;
+  width: 0%;
+  transition: width 0.4s ease-out;
+}
+
+#xpLabel {
+  text-align: center;
+  margin-bottom: 0.4rem;
+  font-weight: bold;
+}
+
+#syncStatus {
+  text-align: center;
+  font-size: 0.9rem;
+  color: #888;
+  margin-top: 0.5rem;
+}
+
+.menu-buttons {
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 80%;
+  max-width: 300px;
+}
+
+.menu-buttons button {
+  padding: 0.8rem;
+  font-size: 1rem;
+  background-color: #444;
+  color: #eee;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.menu-buttons button:hover {
+  background-color: #666;
+}

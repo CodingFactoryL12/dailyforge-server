@@ -1,0 +1,165 @@
+/* 🌌 Grundlayout */
+body {
+  margin: 0;
+  font-family: 'Work Sans', sans-serif;
+  background: radial-gradient(circle at top, #0e0e12, #1d2a35);
+  color: #e2ffe5;
+}
+
+/* 📦 Hauptcontainer */
+.quest-board {
+  max-width: 600px;
+  margin: 2rem auto;
+  background: #1a1a1f;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 0 16px rgba(0, 255, 255, 0.08);
+}
+
+/* 🧭 Titel */
+h2 {
+  margin-bottom: 1rem;
+  color: #a0ffc4;
+  text-align: center;
+}
+
+/* 📑 Listenstruktur */
+.quest-list,
+.completed-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* 📋 Einzelne Quest */
+.quest-item {
+  background: #24272d;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  transition: background 0.3s ease;
+}
+.quest-item:hover {
+  background: #2c313a;
+}
+.quest-item.done {
+  opacity: 0.6;
+}
+
+/* 🎯 Header mit Titel + Belohnung */
+.quest-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+.quest-title {
+  font-weight: bold;
+  color: #58d2cc;
+  font-size: 1rem;
+}
+.quest-meta {
+  display: flex;
+  gap: 0.6rem;
+  font-size: 0.9rem;
+  opacity: 0;
+  transform: translateY(-5px);
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.quest-header.open .quest-meta {
+  opacity: 1;
+  transform: translateY(0);
+}
+.xp-tag,
+.time-tag {
+  background: #2a2d34;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+  color: #a0ffc4;
+}
+
+/* 📚 Body mit Details + Button */
+.quest-body {
+  margin-top: 0.6rem;
+}
+.quest-body.hidden {
+  display: none;
+}
+.quest-details {
+  color: #c8eedd;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+/* 🕹️ Buttons */
+button {
+  background: #2fa7ce;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #121212;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+button:hover {
+  transform: scale(1.03);
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* 📊 Fortschritt */
+.quest-progress p {
+  color: #a0e6e2;
+  margin-bottom: 0.5rem;
+}
+.progress-bar {
+  background: #222;
+  height: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+#questProgressFill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(to right, #58d2cc, #83e6e0);
+  transition: width 0.4s ease;
+}
+
+/* ✅ Erledigte Quests */
+.completed-section {
+  margin-top: 1rem;
+  background: #2a2d34;
+  padding: 1rem;
+  border-radius: 10px;
+}
+.completed-section h3 {
+  color: #6fc3d1;
+  margin-bottom: 0.8rem;
+}
+
+/* ✨ XP-Popup */
+.xp-popup {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  background: #58d2cc;
+  color: #121212;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 0 12px rgba(88, 210, 204, 0.4);
+  opacity: 0;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  z-index: 999;
+}
+.xp-popup.show {
+  opacity: 1;
+  transform: translateY(20px);
+}
+.hidden {
+  display: none;
+}
